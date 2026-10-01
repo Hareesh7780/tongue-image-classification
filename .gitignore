@@ -1,0 +1,9 @@
+venv/
+data/
+__pycache__/
+*.pyc
+models/stage1.keras
+models/stage2.keras
+notebooks/gradcam_*.png
+notebooks/misclassified.png
+notebooks/sample_grid.png
