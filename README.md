@@ -1,13 +1,13 @@
 # Tongue Image Classification (Experimental)
 
-> \*\*Disclaimer: experimental project, not a medical tool.\*\*
-> This is a learning and portfolio project. It is \*\*not a validated medical diagnostic tool\*\* and must not be used to diagnose, treat, or rule out any condition. For any health concern, consult a qualified healthcare professional.
+> **Disclaimer: experimental project, not a medical tool.**
+> This is a learning and portfolio project. It is **not a validated medical diagnostic tool** and must not be used to diagnose, treat, or rule out any condition. For any health concern, consult a qualified healthcare professional.
 
 A computer vision project that classifies grayscale tongue images as **tooth-marked** (`marked`) or **not tooth-marked** (`unmarked`) using transfer learning (MobileNetV2), with a Streamlit app that shows the predicted class, confidence, and a Grad-CAM heatmap.
 
 **Stack:** Python 3.12, TensorFlow/Keras 2.21, OpenCV, scikit-learn, Streamlit.
 
-\---
+---
 
 ## Results at a glance
 
@@ -33,18 +33,18 @@ Confusion matrix (rows = true class, columns = predicted class):
 
 With only 190 test images, the 95% confidence interval for accuracy is roughly **82% to 92%**, so treat 86.8% as an approximate figure, not an exact one.
 
-!\[Confusion matrix](notebooks/confusion\_matrix.png)
-!\[Training curves](notebooks/training\_curves.png)
+![Confusion matrix](notebooks/confusion_matrix.png)
+![Training curves](notebooks/training_curves.png)
 
-\---
+---
 
 ## Dataset
 
-* **Source:** \["tooth-marked-tongue" by HANHUI on Kaggle (version 1, about 290 MB):https://www.kaggle.com/datasets/clearhanhui/biyesheji/data?select=marked]
-* **License:** \[Unknown. The dataset page lists the license as "Unknown", so I assume there is no permission to redistribute. The images are not included in this repository, and figures that contain dataset images are left out]
+* **Source:** ["tooth-marked-tongue" by HANHUI on Kaggle (version 1, about 290 MB):https://www.kaggle.com/datasets/clearhanhui/biyesheji/data?select=marked]
+* **License:** [Unknown. The dataset page lists the license as "Unknown", so I assume there is no permission to redistribute. The images are not included in this repository, and figures that contain dataset images are left out]
 * **Size:** 1,250 PNG images, grayscale, already cropped to the tongue on a black background (sizes vary).
 * **Classes:** `marked` (546 images) and `unmarked` (704 images). Mild imbalance (44% / 56%), handled with class weights.
-* **Labels:** \[The dataset page has no description, so it is not documented who labeled the images or how. Images are sorted into folders named marked and unmarked, and the page title suggests tooth-marked versus not tooth-marked, but this is not confirmed. The labels were not verified by me or by any clinician.]
+* **Labels:** [The dataset page has no description, so it is not documented who labeled the images or how. Images are sorted into folders named marked and unmarked, and the page title suggests tooth-marked versus not tooth-marked, but this is not confirmed. The labels were not verified by me or by any clinician.]
 * **No duplicates:** no duplicate files were found (checked by file checksum).
 * **Not included in this repository.** Download the dataset yourself from the source above and place it as described in "How to run".
 
@@ -55,11 +55,11 @@ With only 190 test images, the 95% confidence interval for accuracy is roughly *
 |marked|382|81|83|
 |unmarked|492|105|107|
 
-\---
+---
 
 ## Method
 
-1. **Preprocessing:** images resized to 224 x 224; the single grayscale channel is replicated to 3 channels; pixel values scaled to \[-1, 1] inside the model.
+1. **Preprocessing:** images resized to 224 x 224; the single grayscale channel is replicated to 3 channels; pixel values scaled to [-1, 1] inside the model.
 2. **Augmentation (training only):** horizontal flip, random rotation (up to about 18 degrees), zoom (10%), contrast (10%).
 3. **Model:** MobileNetV2 pretrained on ImageNet, global average pooling, dropout 0.3, one sigmoid output.
 4. **Training, two stages:**
@@ -71,7 +71,7 @@ With only 190 test images, the 95% confidence interval for accuracy is roughly *
 
 The model was trained once and evaluated once on the test set. No repeated retraining to improve the test score.
 
-\---
+---
 
 ## Explainability (Grad-CAM)
 
@@ -79,7 +79,7 @@ Grad-CAM heatmaps show which image regions most influenced a prediction. I inspe
 
 
 
-Heatmap images are not shown here because they contain dataset images and the dataset license is unknown. Running `python src\\gradcam\_check.py` generates them locally.
+Heatmap images are not shown here because they contain dataset images and the dataset license is unknown. Running `python src\gradcam_check.py` generates them locally.
 
 Observations:
 
@@ -89,7 +89,7 @@ Observations:
 
 Because of this, the reported accuracy should not be read as proof that the model recognizes tooth marks specifically.
 
-\---
+---
 
 ## Limitations
 
@@ -100,7 +100,7 @@ Because of this, the reported accuracy should not be read as proof that the mode
 * **Labels are a visual feature, not a diagnosis:** the classes describe an appearance, not a confirmed disease. Nothing in this project establishes a link to any health condition.
 * **Confidence is not a probability of being correct.** The sigmoid score is the model's own output and is often overconfident. The app flags results below 65% confidence as uncertain, but that threshold was chosen by hand.
 
-\---
+---
 
 ## How to run
 
@@ -108,19 +108,19 @@ Tested on Windows with Python 3.12 (TensorFlow 2.21 did not install on Python 3.
 
 ```
 python -m venv venv
-venv\\Scripts\\activate
+venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
 1. Download the dataset and unzip it so the folders are `data/raw/marked/marked` and `data/raw/unmarked/unmarked`.
-2. Split: `python src\\split\_data.py`
-3. Check the pipeline (optional): `python src\\check\_dataset.py`
-4. Train: `python src\\train.py` (about 10 to 30 minutes on a CPU)
-5. Evaluate: `python src\\evaluate.py`
-6. Heatmap check (optional):- \*\*Label quality is undocumented:\*\* the dataset has no description, so it is unknown who labeled the images and how consistent the labels are. Label errors would lower the ceiling on accuracy and could make the results look different on other data. `
+2. Split: `python src\split_data.py`
+3. Check the pipeline (optional): `python src\check_dataset.py`
+4. Train: `python src\train.py` (about 10 to 30 minutes on a CPU)
+5. Evaluate: `python src\evaluate.py`
+6. Heatmap check (optional):- **Label quality is undocumented:** the dataset has no description, so it is unknown who labeled the images and how consistent the labels are. Label errors would lower the ceiling on accuracy and could make the results look different on other data. `
 7. App: `streamlit run app.py`
 
-\---
+---
 
 ## Project structure
 
@@ -129,17 +129,17 @@ tongue-classifier/
 ├── app.py              # Streamlit app (prediction, confidence, Grad-CAM)
 ├── requirements.txt
 ├── src/
-│   ├── split\_data.py   # train/val/test split
+│   ├── split_data.py   # train/val/test split
 │   ├── dataset.py      # data loading, augmentation, class weights
-│   ├── check\_dataset.py
+│   ├── check_dataset.py
 │   ├── train.py        # two-stage transfer learning
 │   ├── evaluate.py     # test-set metrics and plots
-│   └── - \*\*Label quality is undocumented:\*\* the dataset has no description, so it is unknown   who labeled the images and how consistent the labels are. Label errors would lower the ceiling on accuracy and could make the results look different on other data.
+│   └── - **Label quality is undocumented:** the dataset has no description, so it is unknown   who labeled the images and how consistent the labels are. Label errors would lower the ceiling on accuracy and could make the results look different on other data.
 ├── models/             # trained model, class names, test metrics
 └── notebooks/          # figures (curves, confusion matrix, heatmaps)
 ```
 
-\---
+---
 
 ## Future work
 
@@ -149,7 +149,7 @@ tongue-classifier/
 * Calibrate the confidence scores and choose the "uncertain" threshold from validation data.
 * Compare with other backbones (for example EfficientNetB0) and report variability across several random seeds.
 
-\---
+---
 
 ## Disclaimer (again)
 
